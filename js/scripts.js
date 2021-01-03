@@ -3,11 +3,14 @@ var numBlocks = 8;
 var maxBlocks = 18;
 var blocks = document.querySelectorAll(".block");
 var colors = [];
+var assignments = [];
+var selected_block = -1;
 
 init();
 
 function init() {
 	initializeColors();
+	setUpBlocks();
 	setUpMode();
 	reset();
 }
@@ -21,6 +24,32 @@ function initializeColors() {
 			var res = "rgb("+r+", "+g+", "+b+")";
 		} while(colors.includes(res));
 		colors.push(res);
+	}
+}
+
+function setUpBlocks() {
+	for(var i = 0; i < blocks.length; i++) {
+		blocks[i].addEventListener("click",function() {
+			for(var i = 0; i < blocks.length; i++) {
+				if (this == blocks[i]) {
+					this.style.backgroundColor = assignments[i];
+					if (selected_block == i) {}
+					else if (selected_block == -1) {
+						selected_block = i;
+					}
+					else if (assignments[selected_block] == assignments[i]) {
+						selected_block = -1;
+					}
+					else {
+						setTimeout(function(selected_block, i){
+							blocks[selected_block].style.backgroundColor = "skyblue";
+							blocks[i].style.backgroundColor = "skyblue";
+						}, 1000, selected_block, i);
+						selected_block = -1;
+					}
+				}
+			}
+		});
 	}
 }
 
@@ -54,6 +83,7 @@ function reset() {
 	for(var i = 0; i < maxBlocks; i++) {
 		if (i < numBlocks) {
 			blocks[i].style.display = "block";
+			blocks[i].style.backgroundColor = "skyblue";
 		}
 		else {
 			blocks[i].style.display = "none";
@@ -71,11 +101,14 @@ function assignColors() {
 	for (var i = 0; i < Math.floor(numBlocks/2); i++) {
 		var temp = Math.floor(Math.random()*availableBlocks.length);
 		var randIndex = availableBlocks[temp];
-		blocks[randIndex].style.backgroundColor = colors[i];
+		//blocks[randIndex].style.backgroundColor = colors[i];
+		assignments[randIndex] = colors[i];
 		availableBlocks.splice(temp,1);
+
 		temp = Math.floor(Math.random()*availableBlocks.length);
 		randIndex = availableBlocks[temp];
-		blocks[randIndex].style.backgroundColor = colors[i];
+		//blocks[randIndex].style.backgroundColor = colors[i];
+		assignments[randIndex] = colors[i];
 		availableBlocks.splice(temp,1);
 	}
 }
